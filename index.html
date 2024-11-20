@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Matcher</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            position: relative;
+            min-height: 100vh;
+            margin: 0;
+            padding-bottom: 60px;
+            /* Space for the back button */
+        }
+
+        a {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #000;
+            border: 1px solid #000;
+            border-radius: 4px;
+            background-color: #fff;
+        }
+
+        #details,
+        #content {
+            margin-top: 20px;
+        }
+
+        .back-button {
+            /position: absolute;/
+            bottom: 100px;
+            right: 10px;
+            font-size: 14px;
+            border: none;
+            background-color: whitesmoke;
+            color: #000;
+            cursor: pointer;
+            /text-decoration: underline;/
+        }
+    </style>
+    <script>
+        const emotions = {
+            happy: {
+                dos: [
+                    "Smile at a stranger.",
+                    "Do something kind for someone else.",
+                    "Take a walk in nature.",
+                    "Spend time with loved ones.",
+                    "Pursue a hobby you enjoy.",
+                    "Listen to your favorite music.",
+                    "Dance like no one is watching.",
+                    "Practice gratitude.",
+                    "Exercise regularly.",
+                    "Get enough sleep.",
+                ],
+                donts: [
+                    "Overthink small issues.",
+                    "Compare yourself to others.",
+                    "Neglect your health.",
+                    "Isolate yourself.",
+                    "Hold on to grudges.",
+                    "Overwork yourself.",
+                    "Stay in a negative environment.",
+                    "Ignore your emotions.",
+                    "Procrastinate important tasks.",
+                    "Let fear hold you back."
+                ],
+                stories: [
+                    "One sunny morning, Maya noticed a new family moving into the house next door. Excited to welcome them, she prepared a basket of fresh flowers and homemade treats. As she approached the house, she saw a little girl sitting on the porch, looking sad and lonely. Hello there, Maya said gently, handing the girl a flower. I'm Maya. Welcome to the neighborhood. The girl's face lit up as she accepted the flower. I'm Lily, she replied shyly. We just moved here, and I miss my old home and friends. Maya knelt down to Lily's level. I understand how you feel. Moving can be tough. But do you know what helps me feel happy? she asked. Lily shook her head, her curiosity piqued. Gardening, Maya said with a smile. Would you like to help me in my garden? It's a magical place where happiness grows. Lily's eyes sparkled with interest. Can I really? Of course! Maya exclaimed. Come with me. Over the next few weeks, Maya and Lily spent countless hours in the garden, planting new flowers, watering the plants, and watching the butterflies dance around. Maya taught Lily about the different flowers and how to care for them. Lily's sadness gradually faded, replaced by a sense of joy and fulfillment.",
+                ],
+                quotes: [
+                    "Happiness is a journey, not a destination.",
+                    "Happiness is a journey, not a destination.",
+                    "The purpose of our lives is to be happy. - Dalai Lama",
+                    "Happiness depends upon ourselves. - Aristotle",
+                    "The best way to cheer yourself up is to try to cheer somebody else up. - Mark Twain",
+                    "Happiness is not something ready-made. It comes from your own actions. - Dalai Lama",
+                    "For every minute you are angry, you lose sixty seconds of happiness. - Ralph Waldo Emerson",
+                    "Happiness is when what you think, what you say, and what you do are in harmony. - Mahatma Gandhi",
+                    "The only way to find true happiness is to risk being completely cut open. - Chuck Palahniuk",
+                    "Happiness is not in the mere possession of money; it lies in the joy of achievement, in the thrill of creative effort. - Franklin D. Roosevelt",
+                    "Happiness resides not in possessions, and not in gold, happiness dwells in the soul. - Democritus",
+                    "The happiness of your life depends upon the quality of your thoughts. - Marcus Aurelius",
+                    "The secret of happiness is not in doing what one likes, but in liking what one does. - James M. Barrie",
+                    "Happiness can exist only in acceptance. - George Orwell",
+                    "Happiness is a state of mind. It's just according to the way you look at things. - Walt Disney",
+                    "Happiness is not something you postpone for the future; it is something you design for the present. - Jim Rohn"
+                ],
+            },
+            sad: {
+                dos: [
+                    "Talk to a friend.",
+                    "Cry if you need to.",
+                    "Listen to comforting music.",
+                    "Write down your feelings.",
+                    "Spend time with pets.",
+                    "Take a warm bath.",
+                    "Engage in light exercise.",
+                    "Read a favorite book.",
+                    "Watch a feel-good movie.",
+                    "Practice deep breathing."
+                ],
+                donts: [
+                    "Isolate yourself.",
+                    "Ignore your feelings.",
+                    "Turn to unhealthy habits.",
+                    "Bottle up emotions.",
+                    "Overburden yourself with tasks.",
+                    "Stay in negative environments.",
+                    "Focus on negative thoughts.",
+                    "Neglect self-care.",
+                    "Avoid talking about it.",
+                    "Give up on hobbies."
+                ],
+                stories: "In a small, quiet village, nestled between rolling hills and a shimmering lake, lived a young girl named Lily. Lily was known for her bright smile and the light she brought into everyone's lives. But one cold winter, a series of unfortunate events left Lily feeling sad and disconnected from the joy she once knew. Despite her best efforts to stay positive, Lily found it hard to shake off the sadness that seemed to follow her like a shadow. One evening, while taking a walk to clear her mind, she stumbled upon an old, abandoned shop at the edge of the village. Curious, she pushed open the door and stepped inside. The shop was filled with old trinkets, dusty books, and curious objects. On a shelf, Lily noticed a small, ornate lantern covered in dust. She picked it up and felt a strange sense of comfort holding it. As she brushed off the dust, a soft light flickered to life inside the lantern. A gentle, soothing voice filled the room, Hello, Lily. I've been waiting for you. Startled, Lily looked around but saw no one. Who are you? she asked the lantern. I am the Lantern of Light, the voice replied. I was left here long ago to guide those who feel lost and sad. Lily felt a glimmer of hope. Can you help me find my way back to happiness? The lantern's light grew brighter. Of course. The light inside me is a reminder that even in the darkest times, there is always a spark of hope. Carry me with you, and I will help you find the light within yourself.",
+                quotes: [
+                    "This too shall pass.<br>",
+                    "Sadness flies away on the wings of time. - Jean de La Fontaine",
+                    "Every human walks around with a certain kind of sadness. They may not wear it on their sleeves, but it's there if you look deep. - Taraji P. Henson",
+                    "Tears come from the heart and not from the brain. - Leonardo da Vinci",
+                    "The walls we build around us to keep sadness out also keeps out the joy. - Jim Rohn",
+                    "Turn your wounds into wisdom. - Oprah Winfrey", "Tough times never last, but tough people do. - Robert H. Schuller",
+                    "What brings us to tears, will lead us to grace. Our pain is never wasted. - Bob Goff",
+                    "Sad things happen. They do. But we don’t need to live sad forever. - Mattie Stepanek",
+                    "Although the world is full of suffering, it is also full of the overcoming of it. - Helen Keller",
+                    "Sadness is but a wall between two gardens. - Khalil Gibran",
+                    "Even a happy life cannot be without a measure of darkness, and the word happy would lose its meaning if it were not balanced by sadness. - Carl Jung",
+                    "The good life is not one immune to sadness but one in which suffering contributes to our development. - Alain de Botton",
+                    "There are moments when life surprises you, and sadness can turn into happiness in an instant.",
+                    "After the rain, there’s always a rainbow."
+                ],
+            },
+            angry: {
+                dos: [
+                    "<b>Take deep breaths:</b> Focus on slow, deep breaths to calm your mind.",
+                    "<b>Step away from the situation:</b> Remove yourself from the situation if possible to gain perspective.",
+                    "<b>Count to ten:</b> This can give you time to cool down before reacting",
+                    "<b>Write down your feelings:</b> Journaling can help you process your feelings.",
+                    "<b>Engage in physical activity:</b> Physical activity can be a great way to release pent-up energy.",
+                    "<b>Listen to calming music:</b> Choose calming or uplifting music to improve your mood.",
+                    "<b>Talk to a trusted person:</b> Discuss your feelings with a trusted friend or family member.",
+                    "<b>Practice mindfulness:</b> Engage in mindfulness or meditation exercises to center yourself.",
+                    "<b>Distract yourself with a hobby:</b> Distract yourself with something you enjoy doing.",
+                    "<b>Drink water:</b> Staying hydrated can help maintain overall wellness and reduce stress.",
+                ],
+                donts: [
+                        "Act on impulse.",
+                        "Raise your voice.",
+                        "Throw or break things.",
+                        "Use hurtful words.",
+                        "Ignore the root cause.",
+                        "Dwell on negative thoughts.",
+                        "Drive or operate machinery.",
+                        "Take it out on others.",
+                        "Bottle up your feelings.",
+                        "Stay in a triggering environment."
+                ],
+                stories: "The Angry Artist Once upon a time in a bustling city,there lived a talented artist named Leo.Leo was known for his vibrant paintings that captured the essence of life, but he had a terrible temper.Whenever things didn't go his way, he'd erupt in anger, throwing brushes and ruining his canvases.One day, Leo received a commission to paint a mural in the city square. It was the biggest project of his career, and he was both excited and nervous. As he began his work, things didn't go as planned. The weather was unpredictable, people passing by made rude comments, and Leo's frustration grew.One afternoon, after a particularly harsh remark from a passerby, Leo lost his temper. He threw his brushes to the ground and stormed off, leaving the mural unfinished. A little girl, watching from a distance, approached him with a shy smile. She handed him a small, colorful rock. What's this? Leo asked, his anger still simmering. It's a rainbow rock, she said. When I'm upset, I look at it and remember that storms always pass, and beautiful things follow. Leo looked at the rock, its bright colors standing out against the grey street. He felt a wave of calm wash over him. He realized that his anger was a storm, but he had the power to let it pass and find beauty again.Inspired by the little girl's wisdom, Leo returned to his mural. He channeled his emotions into his art, transforming his anger into creativity. The mural became a masterpiece, celebrated by everyone in the city. Leo learned to manage his temper, always carrying the rainbow rock as a reminder that even in the midst of chaos, beauty could be found.And so, the angry artist became known not just for his art, but for his newfound patience and calm, inspiring others to find their own rainbows in the storm.",
+
+                quotes: [
+                        "Anger is one letter short of danger.",
+                        "Holding on to anger is like drinking poison and expecting the other person to die. - Buddha",
+                        "For every minute you remain angry, you give up sixty seconds of peace of mind. - Ralph Waldo Emerson",
+                        "Anger is an acid that can do more harm to the vessel in which it is stored than to anything on which it is poured. - Mark Twain",
+                        "When anger rises, think of the consequences. - Confucius",
+                        "You will not be punished for your anger, you will be punished by your anger. - Buddha",
+                        "Bitterness is like cancer. It eats upon the host. But anger is like fire. It burns it all clean. - Maya Angelou",
+                        "Speak when you are angry and you will make the best speech you will ever regret. - Ambrose Bierce",
+                        "Never do anything when you are in a temper, for you will do everything wrong. - Baltasar Gracian",
+                        "Anger makes you smaller, while forgiveness forces you to grow beyond what you are. - Cherie Carter-Scott",
+                ],
+            },
+            excited: {
+                dos: [
+                     "Share your excitement with others.",
+                     "Channel your energy into creative projects.",
+                     "Make a plan to maintain your excitement.",
+                     "Celebrate your achievements.",
+                     "Stay present and enjoy the moment.",
+                     "Involve others in your plans.",
+                     "Stay positive and motivated.",
+                     "Document your journey or experience.",
+                     "Take care of your physical health.",
+                     "Spread joy and positivity around you.",
+                ],
+                donts: [
+                    "Don't let excitement turn into anxiety.",
+                    "Don't overcommit yourself.",
+                    "Avoid making impulsive decisions.",
+                    "Don't ignore responsibilities.",
+                    "Avoid neglecting your rest.",
+                    "Don't forget to consider others' feelings.",
+                    "Avoid spreading yourself too thin.",
+                    "Don't lose sight of your goals.",
+                    "Avoid unrealistic expectations.",
+                ],
+                stories: "In a bustling city, there lived a young girl named Mia. Mia was known for her love of adventures and her boundless excitement for life. However, as school and daily routines took over, Mia found herself stuck in a cycle of monotony. She longed for a new adventure to spark her excitement once more. One day, as Mia was walking home from school, she noticed an old, faded map sticking out from a crack in the sidewalk. Intrigued, she picked it up and saw that it was a treasure map leading to a hidden location within the city. Her heart raced with excitement as she studied the map, eager to embark on a new adventure. Mia decided to follow the map's clues, which led her through winding alleys, over bustling streets, and into hidden corners of the city she had never seen before. Along the way, she encountered friendly strangers who offered her guidance and encouragement. Each step of the journey filled her with a sense of wonder and anticipation. As she neared the final destination marked on the map, Mia found herself standing in front of an old, abandoned building. She hesitated for a moment, then gathered her courage and pushed open the creaky door. Inside, she discovered a room filled with forgotten treasures—books, toys, and artifacts from a bygone era. Among the treasures, Mia found a letter addressed to The Adventurer Who Finds This Map. The letter explained that the room was a place of joy and discovery, left behind by a group of adventurers who wanted to share their excitement with future generations. They encouraged the finder to embrace the spirit of adventure and spread excitement wherever they went.",
+                quotes: [
+                    "Excitement is the spark of life.",
+                    "The best way to predict the future is to create it. - Peter Drucker",
+                    "Stay excited. Excitement is the most powerful force in the world. - Paulo Coelho",
+                    "The only way to do great work is to love what you do. - Steve Jobs",
+                    "Excitement is a state of mind. It’s what keeps us moving forward.",
+                    "The more you praise and celebrate your life, the more there is in life to celebrate. - Oprah Winfrey",
+                    "Excitement lies in the fact that anything can happen.",
+                    "The future belongs to those who believe in the beauty of their dreams. - Eleanor Roosevelt",
+                    "Life is an adventure, and I’m excited to see where it leads.",
+                    "Find ecstasy in life; the mere sense of living is joy enough. - Emily Dickinson",
+                ],
+            },
+            anxious: {
+                dos: [
+                    "Practice mindfulness and meditation.",
+                    "Engage in regular physical exercise.",
+                    "Maintain a balanced and healthy diet.",
+                    "Get adequate sleep each night.",
+                    "Stay connected with supportive friends and family.",
+                    "Write down your thoughts and feelings in a journal.",
+                    "Practice deep breathing exercises.",
+                    "Set small, manageable goals.",
+                    "Engage in activities that you enjoy.",
+                    "Seek professional help if needed.",
+                ],
+                donts: [
+                    "Avoid caffeine and other stimulants.",
+                    "Don't suppress your feelings.",
+                    "Avoid alcohol and recreational drugs.",
+                    "Don't isolate yourself from others.",
+                    "Avoid negative self-talk.",
+                    "Don't overcommit yourself.",
+                    "Avoid reading or watching distressing news.",
+                    "Don't ignore your physical health.",
+                    "Avoid perfectionism.",
+                    "Don't hesitate to ask for help.",
+                ],
+                stories: "In a dense forest, nestled among towering trees and vibrant flowers, lived a small bird named Aria. Aria was known for her beautiful singing, but she was also known for her anxious nature. She worried about everything—flying too high, venturing too far from her nest, and the dangers lurking in the forest. One sunny morning, as Aria sat in her nest, she noticed a group of birds flying together, laughing and enjoying the wind beneath their wings. Aria longed to join them but was held back by her fears. She sighed and hummed a soft tune, wishing she could overcome her anxiety. Just then, an old wise owl named Ollie flew by and perched on a nearby branch. He had seen Aria many times and knew of her struggles. Good morning, Aria, he hooted gently. Why do you look so down? I'm afraid, Ollie, Aria confessed. I'm afraid of flying high, of the unknown, and of all the things that could go wrong. Ollie nodded thoughtfully. I understand, little one. But fear is often a story we tell ourselves. What if, instead of focusing on what could go wrong, you focused on what could go right? Aria tilted her head, curious but still apprehensive. What do you mean? Ollie spread his wings wide. The sky is vast and full of possibilities. Every flight is a chance to discover something new, to grow stronger, and to find joy. You have the strength within you, Aria. Take small steps, and soon you'll find that your wings are capable of so much more than you realize.",
+                quotes: [
+                    "Anxiety does not empty tomorrow of its sorrows, but only empties today of its strength. - Charles Spurgeon",
+                    "You don’t have to control your thoughts. You just have to stop letting them control you. - Dan Millman",
+                    "Do not anticipate trouble or worry about what may never happen. Keep in the sunlight. - Benjamin Franklin",
+                    "It’s not time to worry yet. - Harper Lee, To Kill a Mockingbird",
+                    "Anxiety is a thin stream of fear trickling through the mind. If encouraged, it cuts a channel into which all other thoughts are drained. - Arthur Somers Roche",
+                    "You wouldn’t worry so much about what others think of you if you realized how seldom they do. - Eleanor Roosevelt",
+                    "Feelings come and go like clouds in a windy sky. Conscious breathing is my anchor. - Thich Nhat Hanh",
+                    "Present fears are less than horrible imaginings. - William Shakespeare",
+                ],
+            },
+            bored: {
+                dos: [
+                    "Explore a new hobby or interest.",
+                    "Read a book or listen to an audiobook.",
+                    "Take a walk and enjoy nature.",
+                    "Learn something new, like a language or instrument.",
+                    "Connect with friends or family.",
+                ],
+                donts: [
+                    "Don’t spend too much time on social media.",
+                    "Avoid excessive screen time.",
+                    "Don’t isolate yourself from others.",
+                    "Avoid dwelling on boredom and feeling stuck.",
+                    "Don’t neglect self-care routines.",
+                ],
+                stories: "In a small village surrounded by endless fields, lived a young boy named Ravi. Ravi was known for his insatiable curiosity and restless spirit. He often found himself bored, even in a village full of activities. He longed for something new and exciting to break the monotony of his daily routine. One afternoon, while Ravi was wandering aimlessly, he stumbled upon an old, abandoned library at the edge of the village. The building was covered in ivy, and its doors creaked as he pushed them open. Inside, Ravi found shelves lined with dusty books, each one a portal to a different world. Despite the eerie silence, Ravi's curiosity got the better of him. He picked up a book and began to read. As the hours passed, he became engrossed in stories of distant lands, brave heroes, and magical creatures. The library became his refuge, a place where his boredom disappeared, replaced by endless adventures and knowledge. Days turned into weeks, and Ravi's visits to the library became a daily ritual. He read about history, science, art, and cultures from around the world. His mind expanded, and he discovered a newfound passion for learning. Ravi realized that the world was full of wonders waiting to be explored, and all he needed was curiosity and an open mind. One day, Ravi decided to share his discovery with the other children in the village. He invited them to join him in the library, and together they embarked on a journey of learning and imagination. The once-abandoned library came to life with laughter, excitement, and the joy of discovery.",
+                quotes: [
+                    "Boredom always precedes a period of great creativity. - Robert M. Pirsig",
+                    "The cure for boredom is curiosity. There is no cure for curiosity. - Dorothy Parker",
+                    "Life is never boring, but some people choose to be bored. - Wayne Dyer",
+                    "Boredom is simply the absence of an interesting perspective. - Brandon A. Trean",
+                ],
+            },
+            surprised: {
+                dos: [
+                    "Embrace the unexpected.",
+                    "Take a moment to process the surprise.",
+                    "Look for the positive aspects of the surprise.",
+                    "Be flexible and adaptable.",
+                    "Share the surprise with others if appropriate.",
+                ],
+                donts: [
+                    "Avoid jumping to conclusions.",
+                    "Don't isolate yourself.",
+                    "Don't let the surprise disrupt your routine excessively.",
+                    "Don't be too hard on yourself or others.",
+                    "Don't forget to breathe and stay grounded.",
+                ],
+                stories: "In a quaint village nestled between rolling hills, there lived a humble baker named Thomas. He was known for his kindness and the delicious pastries he made in his small, cozy bakery. Despite his generosity, Thomas led a simple life and often struggled to make ends meet.One snowy winter's evening, just before closing time, an old woman entered the bakery. She wore a tattered cloak and her eyes sparkled with a mysterious wisdom. Good evening, Thomas, she greeted him with a warm smile.Thomas was taken aback. Good evening, madam. How may I help you? The old woman handed him a tiny, intricately wrapped package. This is for you. Open it when you are alone, she instructed, then disappeared into the snowy night without another word. Curious and puzzled, Thomas finished his work for the day and closed the bakery. He hurried to his small apartment above the shop, eager to uncover the mystery of the little package. With a mixture of anticipation and excitement, he carefully unwrapped it. Inside the package, he found a beautiful golden key and a note that read: This key will unlock the door to your true potential. Use it wisely. Thomas was bewildered. He had no idea what door the key might open or what it could mean. Days turned into weeks, and the mystery of the key lingered in his mind. One day, while organizing his attic, he stumbled upon an old, forgotten chest. On a whim, he tried the golden key in the lock, and to his astonishment, it fit perfectly.",
+                quotes: [
+                    "Life is full of surprises and serendipity. Being open to unexpected turns in the road is an important part of success. - Condoleezza Rice",
+                    "The greatest gift in life is the unexpected. - Ken Poirot",
+                    "Expect the unexpected.",
+                    "Always be on the lookout for the presence of wonder. - E.B. White",
+                    "One of the delightful things about Americans is that they have absolutely no historical memory. - Zhou Enlai",
+                ],
+            },
+            afraid: {
+                dos: [
+                    "Face your fears gradually and gently.",
+                    "Set small, achievable goals to build confidence.",
+                    "Use relaxation techniques like deep breathing.",
+                    "Educate yourself about what you're afraid of.",
+                    "Focus on positive outcomes and possibilities.",
+                    "Challenge negative thoughts and replace them with positive ones.",
+                ],
+                donts: [
+                    "Don't ignore or avoid your fears.",
+                    "Avoid overthinking",
+                    "Avoid making important decisions when feeling fearful.",
+                    "Don't let fear dictate your actions.",
+                    "Don't use substances to cope with fear.",
+                ],
+                stories: "The Seedling's Journey : In a dense forest, filled with towering trees and lush foliage, a tiny seedling sprouted from the forest floor. The seedling, named Sprout, was full of dreams and aspirations. Though small, Sprout wanted to reach the sky and become a majestic tree like the ones around it.Every day, Sprout stretched its leaves toward the sunlight, soaking in the warmth and energy. However, the journey was not easy. The forest was crowded, and Sprout often found itself in the shade, struggling to grow. At times, heavy rains and strong winds battered the little seedling, making it wonder if it would ever achieve its dreams.Despite the challenges, Sprout remained resilient. It found strength in its roots, which burrowed deep into the earth, drawing nourishment and support. Nearby trees, witnessing Sprout's determination, offered words of encouragement. They shared their wisdom, telling stories of their own struggles and how they overcame them.One day, a wise old oak tree spoke to Sprout. Remember, little one, growth takes time. Every struggle you face is a lesson that makes you stronger. Embrace the journey, and you will reach heights you never imagined.Inspired by the oak's words, Sprout continued to persevere. It grew a little taller each day, its leaves becoming broader and stronger. Seasons passed, and the forest witnessed Sprout's transformation. What once was a tiny seedling had grown into a young tree, resilient and full of life. One morning, as the sun rose, Sprout realized that it could finally see the sky through the canopy of leaves. The journey had been long and arduous, but every step had been worth it. Sprout had become a symbol of hope and perseverance in the forest, inspiring other seedlings to reach for their dreams. The lesson of Sprout's journey is clear: no matter how small you start or how difficult the path, with resilience, determination, and the support of those around you, you can achieve great heights. Just like Sprout, every challenge you face can be a stepping stone to your dreams.",
+                quotes: [
+                    "Fear is only as deep as the mind allows. - Japanese Proverb",
+                    "Everything you want is on the other side of fear. - Jack Canfield",
+                    "You gain strength, courage, and confidence by every experience in which you really stop to look fear in the face. - Eleanor Roosevelt",
+                    "Courage is not the absence of fear, but the triumph over it. - Nelson Mandela",
+                    "The brave man is not he who does not feel afraid, but he who conquers that fear. - Nelson Mandela",
+                ],
+            }
+        };
+        const users = [];
+        function showLandingPage() {
+            //document.getElementById('username').value = '';
+            //document.getElementById('password').value = '';
+            //document.getElementById('gender').value = '';
+            //document.getElementById('age').value = '';
+            document.getElementById('landing').style.display = 'block';
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('register-page').style.display = 'none';
+            document.getElementById('emotions').style.display = 'none';
+        }
+
+        // Function to show the registration page
+        function showRegisterPage() {
+            document.getElementById('landing').style.display = 'none';
+            document.getElementById('register-page').style.display = 'block';
+        }
+        function registerUser() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const gender = document.getElementById('gender').value;
+            const age = document.getElementById('age').value;
+
+            if (username && password && gender && age) {
+                let users = JSON.parse(localStorage.getItem("users")) || [];
+                const userExists = users.some(user => user.username === username);
+                //console.log("testing username:", username);
+
+                if (userExists) {
+                    alert("User already exists");
+                } else {
+                    // Store the user details in the users array
+                    users.push({ username, password, gender, age });
+                    localStorage.setItem("users", JSON.stringify(users));
+                    alert("Registration Successful!");
+      
+                    //document.getElementById("username").value = '';
+                    //document.getElementById("password").value = '';
+                    //document.getElementById("gender").value = '';
+                    //document.getElementById("age").value = '';
+                    showLandingPage();
+                }
+            } else {
+                alert("Please fill in all fields.");
+            }
+        }
+        function showLoginPage() {
+            //document.getElementById('username').value = '';
+            // document.getElementById('password').value = '';
+            document.getElementById('landing').style.display = 'none';
+            document.getElementById('login-page').style.display = 'block';
+
+        }
+        function validate() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            console.log('Entered Username:', username);
+            console.log('Entered Password:', password);
+            if (username === '' || password === '') {
+                alert("Please fill in both fields.");
+            } else {
+                let users = JSON.parse(localStorage.getItem("users")) || [];
+                const user = users.find(u => u.username.toLowerCase() === username && u.password === password);
+                if (user) {
+                    //testing login
+                   // localStorage.setItem('loggedInUser', JSON.stringify(user));
+                    document.getElementById('login-page').style.display = 'none';
+                    document.getElementById('emotions').style.display = 'block';
+                } else {
+                    alert("Incorrect username or password.");
+                }
+            }
+        }
+        function showDetails(emotion) {
+            document.getElementById('emotions').style.display = 'none';
+            document.getElementById('details').style.display = 'block';
+            document.getElementById('content').style.display = 'none';
+            document.getElementById('emotion-title').innerText = emotion.charAt(0).toUpperCase() + emotion.slice(1);
+        }
+
+        function showContent(type) {
+            const emotion = document.getElementById('emotion-title').innerText.toLowerCase();
+            document.getElementById('details').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+            document.getElementById('content-title').innerText = type.charAt(0).toUpperCase() + type.slice(1);
+            if (Array.isArray(emotions[emotion][type])) {
+                const content = emotions[emotion][type].join('<br>');
+                document.getElementById('content-details').innerHTML = content;
+            } else {
+                document.getElementById('content-details').innerHTML = emotions[emotion][type];
+            }
+        }
+
+        function showEmotions() {
+            document.getElementById('details').style.display = 'none';
+            document.getElementById('content').style.display = 'none';
+            document.getElementById('emotions').style.display = 'block';
+        }
+
+        function showDetailsAgain() {
+            document.getElementById('content').style.display = 'none';
+            document.getElementById('details').style.display = 'block';
+        }
+        function logout() {
+            //document.getElementById('username').value = '';
+            //document.getElementById('password').value = '';
+            document.getElementById('landing').style.display = 'block';
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('register-page').style.display = 'none';
+            document.getElementById('emotions').style.display = 'none';
+            document.getElementById('details').style.display = 'none';
+            document.getElementById('content').style.display = 'none';
+            showLandingPage();
+
+        }
+    </script>
+</head>
+
+<body onload="showLandingPage()" ; style="background-color: black; color: white;">
+    <div id="landing" style="background-image: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnpHQbF-VNZ81KhWmR-4JTgmZycHd_WVTjJA&s); filter: brightness(40%);">
+        <div>
+            <h1 style="color: black;">Welcome to Mood Matcher</h1>
+        </div>
+        <button type="button" onclick="showRegisterPage()">Register</button>
+        <button type="button" onclick="showLoginPage()">Login</button>
+    </div>
+    <div id="register-page">
+        <div class="form-container">
+            <h2>Register</h2>
+            <input type="text" class="input-field" placeholder="Username" id="username"><br><br>
+            <input type="password" class="input-field" placeholder="Password" id="password"><br><br>
+            <select class="input-field" id="gender">
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+            </select><br><br>
+            <style>
+                #gender option[value=""] {
+                    display: none;
+                }
+            </style>
+            <input type="number" class="input-field" placeholder="Age" id="age" min="0"><br><br>
+            <button type="button" onclick="registerUser()">Register</button>
+            <button type="button" onclick="showLandingPage()">Back</button>
+        </div>
+    </div>
+    <div id="login-page">
+        <div class="form-container">
+            <h1>Login Page</h1>
+            <label for="username">Username:</label>
+            <input type="text" class="input-field" id="username"><br><br>
+            <label for="password">Password:</label>
+            <input type="password" class="input-field" id="password"><br><br>
+            <button type="button" onclick="validate()">Login</button>
+            <button type="button" onclick="showLandingPage()">Back</button>
+
+        </div>
+    </div>
+    <div id="emotions" style="font-size: medium;font-family: serif;">
+        <h1 style="font-size: xx-large;font-family: 'Times New Roman', Times, serif;color: azure;">Select an Emotion
+        </h1>
+        <a class="emotion-btn" href="#" onclick="showDetails('happy')">Happy <span
+                style="font-size:50px;">&#128522;</span></a><br>
+        <a class="emotion-btn" href="#" onclick="showDetails('sad')">Sad <span
+                style="font-size:50px;">&#128546;</span></a><br>
+        <a class="emotion-btn" href="#" onclick="showDetails('angry')">Angry <span
+                style="font-size:50px;">&#128544;</span></a><br>
+        <a class="emotion-btn" href="#" onclick="showDetails('excited')">Excited <span
+                style="font-size:50px;">&#128516;</span></a><br>
+        <a class="emotion-btn" href="#" onclick="showDetails('anxious')">Anxious <span
+                style="font-size:50px;">&#128560;</span></a><br>
+        <a class="emotion-btn" href="#" onclick="showDetails('bored')">Bored <span
+                style="font-size:50px;">&#128528;</span></a><br>
+        <a class="emotion-btn" href="#" onclick="showDetails('surprised')">Surprised <span
+                style="font-size:50px;">&#128562;</span></a><br>
+        <a class="emotion-btn" href="#" onclick="showDetails('afraid')">Afraid <span
+                style="font-size:50px;">&#128552;</span></a><br>
+        <a href="#" onclick="logout()"
+            style="display: inline-block; padding: 8px 16px; font-size: 16px; color: white; background-color: red; border-radius: 5px; text-decoration: none; margin-top: 20px;">Logout</a>
+    </div>
+
+
+    </div>
+    <div id="details" style="display:none;">
+        <h2 id="emotion-title"></h2>
+        <a href="#" onclick="showContent('dos')">Do's <span
+                style="font-size: large; font-family: serif;">&#9989;</span></a><br>
+        <a href="#" onclick="showContent('donts')">Don'ts <span
+                style="font-size: large; font-family: serif;">&#10060;</span></a><br>
+        <a href="#" onclick="showContent('stories')">Stories <span
+                style="font-size: large; font-family: serif;">&#11088;</span></a><br>
+        <a href="#" onclick="showContent('quotes')">Quotes <span
+                style="font-size: large; font-family: serif;">&#127752;</span></a><br>
+        <button class="back-button" onclick="showEmotions()">Back</button><br>
+    </div>
+    <div id="content" style="display:none;">
+        <h3 id="content-title"></h3>
+        <p id="content-details"></p>
+        <button class="back-button" onclick="showDetailsAgain()">Back</button>
+    </div>
+</body>
+
+</html>
