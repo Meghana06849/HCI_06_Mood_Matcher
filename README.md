@@ -1,7 +1,7 @@
 # HCI_06_Mood_Matcher
 🎭 Mood Matcher
 
-Mood Matcher is an AI-powered project that analyzes user input to detect emotional tone and matches it with appropriate responses, content, or recommendations.
+Mood Matcher is an project that analyzes user input to detect emotional tone and matches it with appropriate responses, content, or recommendations.
 The goal is simple: understand mood → react intelligently.
 
 This project focuses   practical AI application, not theory.
